@@ -66,15 +66,18 @@ const token = "Jsbl8ongs9P32p2iKyLykEVQxcG2";
 // <!-- 載入資料庫、金鑰、環境變數END -->
 
 
-// 初始化
+// <!-- 初始化 -->
 function init(){
   getProductList();
   getCartList();
 }
 init();
+// <!-- 初始化END -->
 
-// 一、商品列表
-// 取得商品列表
+
+// <!-- 一、商品列表 -->
+
+// 1-1 取得商品列表
 const productList = document.querySelector(".productWrap");
 let productData = [];
 function getProductList(){
@@ -87,7 +90,7 @@ function getProductList(){
   })
 }
 
-//(重構) 商品資訊組合：統一組字串
+// 1-2 重構商品資訊組合：統一組字串
 function combineProductInfo(item){
   return `
   <li class="productCard">
@@ -100,7 +103,7 @@ function combineProductInfo(item){
   </li>`
 }
 
-// 渲染商品列表
+// 1-3 渲染商品列表
 function renderProductList(){
   let str = "";
       productData.forEach(function(item){
@@ -109,7 +112,7 @@ function renderProductList(){
       productList.innerHTML = str;
 }
 
-// 商品列表選單切換事件
+// 1-4 商品列表選單切換事件
 const productSelect = document.querySelector(".productSelect");
 productSelect.addEventListener("change", function(e){
   const category = e.target.value;
@@ -125,10 +128,12 @@ productSelect.addEventListener("change", function(e){
   })
   productList.innerHTML = str;
 })
+// <!-- 一、商品列表END -->
 
-// 二、購物車
 
-// 取得購物車資料
+// <!-- 二、購物車 -->
+
+// 2-1 取得購物車資料
 const cartList = document.querySelector(".shoppingCart-tableList");
 const finalTotal = document.querySelector(".finalTotal");
 let cartData = [];
@@ -165,7 +170,7 @@ function getCartList(){
   })
 }
 
-// 加入購物車事件
+// 2-2 加入購物車事件
   // 監聽對象是商品列表 productList ，再用 if 去確保點擊到按鈕 addCardBtn 才會觸發事件
   // 因為 querySelector 只能綁單一 class；querySelectorAll 需要每顆按鈕個別綁定，資料越多越難管理，也會拖慢效能
   // 監聽最好都寫在外層，用最外層去綁監聽，再去選擇內部的觸發點最保險
@@ -207,7 +212,7 @@ productList.addEventListener("click", function(e){
     })
 })
 
-// 購物車取消事件
+// 2-3 購物車取消事件
 // 監聽購物車清單
 cartList.addEventListener("click", function(e){
   // 取消默認的行為(錨點點擊後會至頂)
@@ -230,7 +235,7 @@ cartList.addEventListener("click", function(e){
   })
 })
 
-// 刪除整個購物車事件
+// 2-4 刪除整個購物車事件
 //監聽全部刪除按鈕
 const discardAllBtn = document.querySelector(".discardAllBtn");
 discardAllBtn.addEventListener("click", function(e){
@@ -245,7 +250,10 @@ discardAllBtn.addEventListener("click", function(e){
   })
 })
 
-// 送出訂單事件
+// <!-- 二、購物車END -->
+
+
+// <!-- 三、送出訂單 -->
 const orderInfoBtn =  document.querySelector(".orderInfo-btn");
 orderInfoBtn.addEventListener("click", function(e){
   e.preventDefault();
@@ -286,9 +294,70 @@ orderInfoBtn.addEventListener("click", function(e){
     })
 })
 
+// <!-- 三、送出訂單END -->
+
+
+// <!-- 套件工具 -->
+
 // 千分位工具
 function toThousands(x){
   let parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
 }
+
+// validation 表單驗證套件
+const inputs = document.querySelectorAll("input[name],select[data=payment]");
+const form = document.querySelector(".orderInfo-form");
+const constraints = {
+  姓名: {
+    presence: {
+      message: "必填欄位"
+    }
+  },
+  電話: {
+    presence: {
+      message: "必填欄位"
+    },
+    length: {
+      minimum: 8,
+      message: "需超過 8 碼"
+    }
+  },
+  Email: {
+    presence: {
+      message: "必填欄位"
+    },
+    email: {
+      message: "格式錯誤"
+    }
+  },
+  寄送地址: {
+    presence: {
+      message: "必填欄位"
+    }
+  },
+  交易方式: {
+    presence: {
+      message: "必填欄位"
+    }
+  }
+};
+
+inputs.forEach((item) => {
+  item.addEventListener("blur", function () {
+    item.nextElementSibling.textContent = "";
+    let errors = validate(form, constraints);
+    console.log(errors);
+
+    if (errors) {
+      Object.keys(errors).forEach(function (keys) {
+        // console.log(document.querySelector(`[data-message=${keys}]`))
+        document.querySelector(`[data-message="${keys}"]`).textContent =
+          errors[keys];
+      });
+    }
+  });
+});
+
+// <!-- 套件工具END -->
