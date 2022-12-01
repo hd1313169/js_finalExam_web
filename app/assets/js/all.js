@@ -85,8 +85,7 @@ function getProductList(){
   `)
   .then(function(response){
       productData = response.data.products;
-      renderProductList()
-      
+      renderProductList()     
   })
 }
 
@@ -123,7 +122,7 @@ productSelect.addEventListener("change", function(e){
   let str = "";
   productData.forEach(function(item){
       if(item.category == category){
-          str+=str+=combineProductInfo(item);
+          str+=combineProductInfo(item);
       }
   })
   productList.innerHTML = str;
