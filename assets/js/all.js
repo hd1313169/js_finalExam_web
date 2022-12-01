@@ -117,7 +117,7 @@ productSelect.addEventListener("change", function (e) {
   var str = "";
   productData.forEach(function (item) {
     if (item.category == category) {
-      str += str += combineProductInfo(item);
+      str += combineProductInfo(item);
     }
   });
   productList.innerHTML = str;
