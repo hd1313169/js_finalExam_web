@@ -57,11 +57,13 @@ function menuToggle() {
 function closeMenu() {
   menu.classList.remove('openMenu');
 }
+// <!-- 預設 JS，請同學不要修改此處END -->
 
 
-// 載入資料庫、金鑰、環境變數
+// <!-- 載入資料庫、金鑰、環境變數 -->
 const apiPath = "ryanchiangfinaleaxam";
 const token = "Jsbl8ongs9P32p2iKyLykEVQxcG2";
+// <!-- 載入資料庫、金鑰、環境變數END -->
 
 
 // 初始化
@@ -72,7 +74,6 @@ function init(){
 init();
 
 // 一、商品列表
-
 // 取得商品列表
 const productList = document.querySelector(".productWrap");
 let productData = [];
