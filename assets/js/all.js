@@ -69,15 +69,16 @@ function closeMenu() {
 
 var apiPath = "ryanchiangfinaleaxam";
 var token = "Jsbl8ongs9P32p2iKyLykEVQxcG2"; // <!-- 載入資料庫、金鑰、環境變數END -->
-// 初始化
+// <!-- 初始化 -->
 
 function init() {
   getProductList();
   getCartList();
 }
 
-init(); // 一、商品列表
-// 取得商品列表
+init(); // <!-- 初始化END -->
+// <!-- 一、商品列表 -->
+// 1-1 取得商品列表
 
 var productList = document.querySelector(".productWrap");
 var productData = [];
@@ -87,12 +88,12 @@ function getProductList() {
     productData = response.data.products;
     renderProductList();
   });
-} //(重構) 商品資訊組合：統一組字串
+} // 1-2 重構商品資訊組合：統一組字串
 
 
 function combineProductInfo(item) {
   return "\n  <li class=\"productCard\">\n      <h4 class=\"productType\">\u65B0\u54C1</h4>\n      <img src=\"".concat(item.images, "\" alt=\"\">\n      <a href=\"#\" class=\"addCardBtn\" data-id=\"").concat(item.id, "\" data-title=\"").concat(item.title, "\">\u52A0\u5165\u8CFC\u7269\u8ECA</a>\n      <h3>").concat(item.title, "</h3>\n      <del class=\"originPrice\">NT$").concat(toThousands(item.origin_price), "</del>\n      <p class=\"nowPrice\">NT$").concat(toThousands(item.price), "</p>\n  </li>");
-} // 渲染商品列表
+} // 1-3 渲染商品列表
 
 
 function renderProductList() {
@@ -101,7 +102,7 @@ function renderProductList() {
     str += combineProductInfo(item);
   });
   productList.innerHTML = str;
-} // 商品列表選單切換事件
+} // 1-4 商品列表選單切換事件
 
 
 var productSelect = document.querySelector(".productSelect");
@@ -120,8 +121,9 @@ productSelect.addEventListener("change", function (e) {
     }
   });
   productList.innerHTML = str;
-}); // 二、購物車
-// 取得購物車資料
+}); // <!-- 一、商品列表END -->
+// <!-- 二、購物車 -->
+// 2-1 取得購物車資料
 
 var cartList = document.querySelector(".shoppingCart-tableList");
 var finalTotal = document.querySelector(".finalTotal");
@@ -140,7 +142,7 @@ function getCartList() {
 
     finalTotal.textContent = toThousands(response.data.finalTotal);
   });
-} // 加入購物車事件
+} // 2-2 加入購物車事件
 // 監聽對象是商品列表 productList ，再用 if 去確保點擊到按鈕 addCardBtn 才會觸發事件
 // 因為 querySelector 只能綁單一 class；querySelectorAll 需要每顆按鈕個別綁定，資料越多越難管理，也會拖慢效能
 // 監聽最好都寫在外層，用最外層去綁監聽，再去選擇內部的觸發點最保險
@@ -178,7 +180,7 @@ productList.addEventListener("click", function (e) {
     alert("".concat(productTitle, " \u5DF2\u52A0\u5165\u8CFC\u7269\u8ECA"));
     getCartList();
   });
-}); // 購物車取消事件
+}); // 2-3 購物車取消事件
 // 監聽購物車清單
 
 cartList.addEventListener("click", function (e) {
@@ -198,7 +200,7 @@ cartList.addEventListener("click", function (e) {
     alert("\u5DF2\u522A\u9664 ".concat(productTitle));
     getCartList(); // 重新渲染，整理目前資料
   });
-}); // 刪除整個購物車事件
+}); // 2-4 刪除整個購物車事件
 //監聽全部刪除按鈕
 
 var discardAllBtn = document.querySelector(".discardAllBtn");
@@ -210,7 +212,8 @@ discardAllBtn.addEventListener("click", function (e) {
   })["catch"](function (response) {
     alert("\u8CFC\u7269\u8ECA\u6C92\u6709\u6771\u897F");
   });
-}); // 送出訂單事件
+}); // <!-- 二、購物車END -->
+// <!-- 三、送出訂單 -->
 
 var orderInfoBtn = document.querySelector(".orderInfo-btn");
 orderInfoBtn.addEventListener("click", function (e) {
@@ -251,11 +254,65 @@ orderInfoBtn.addEventListener("click", function (e) {
     console.log(customerAddress);
     getCartList();
   });
-}); // 千分位工具
+}); // <!-- 三、送出訂單END -->
+// <!-- 套件工具 -->
+// 千分位工具
 
 function toThousands(x) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
-}
+} // validation 表單驗證套件
+
+
+var inputs = document.querySelectorAll("input[name],select[data=payment]");
+var form = document.querySelector(".orderInfo-form");
+var constraints = {
+  姓名: {
+    presence: {
+      message: "必填欄位"
+    }
+  },
+  電話: {
+    presence: {
+      message: "必填欄位"
+    },
+    length: {
+      minimum: 8,
+      message: "需超過 8 碼"
+    }
+  },
+  Email: {
+    presence: {
+      message: "必填欄位"
+    },
+    email: {
+      message: "格式錯誤"
+    }
+  },
+  寄送地址: {
+    presence: {
+      message: "必填欄位"
+    }
+  },
+  交易方式: {
+    presence: {
+      message: "必填欄位"
+    }
+  }
+};
+inputs.forEach(function (item) {
+  item.addEventListener("blur", function () {
+    item.nextElementSibling.textContent = "";
+    var errors = validate(form, constraints);
+    console.log(errors);
+
+    if (errors) {
+      Object.keys(errors).forEach(function (keys) {
+        // console.log(document.querySelector(`[data-message=${keys}]`))
+        document.querySelector("[data-message=\"".concat(keys, "\"]")).textContent = errors[keys];
+      });
+    }
+  });
+}); // <!-- 套件工具END -->
 //# sourceMappingURL=all.js.map
