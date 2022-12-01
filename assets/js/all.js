@@ -63,11 +63,13 @@ function menuToggle() {
 
 function closeMenu() {
   menu.classList.remove('openMenu');
-} // 載入資料庫、金鑰、環境變數
+} // <!-- 預設 JS，請同學不要修改此處END -->
+// <!-- 載入資料庫、金鑰、環境變數 -->
 
 
 var apiPath = "ryanchiangfinaleaxam";
-var token = "Jsbl8ongs9P32p2iKyLykEVQxcG2"; // 初始化
+var token = "Jsbl8ongs9P32p2iKyLykEVQxcG2"; // <!-- 載入資料庫、金鑰、環境變數END -->
+// 初始化
 
 function init() {
   getProductList();
